@@ -1,13 +1,16 @@
 # upload_image
 PHP Upload Image Class
 
-Created by Sakarioka.com.
-Email: gurinlife@gmail.com / saka@sakarioka.com.
-Class function: Validate and upload image file using PHP.
+Created by Sakarioka.com.<br>
+Email: gurinlife@gmail.com / saka@sakarioka.com.<br>
+Class function: Validate and upload image file using PHP.<br>
 
-Simply just need to add the class and run the upload function.
-The uploaded image will be moved into uploaded directory.
+Simply just need to add the class and run the upload function.<br>
+The uploaded image will be moved into uploaded directory.<br>
 
-Example: 
+
+<pre>
+Example:
 $c_image = new Upload_Image($_FILES['image']);
 $c_image->upload();
+</pre>
