@@ -136,6 +136,7 @@ class Upload_Image
    *
    * Function generate random name.
    * Generate random name image for the image file.
+   * Using date now and random string name.
    *
    */
   public function generate_random_name($name_length = 30)
@@ -145,8 +146,10 @@ class Upload_Image
     $random_name       = '';
 
     for ($i = 0; $i < $name_length; $i++) {
-      $random_name .= date('YmdHis').'.'.$characters[rand(0, $characters_length - 1)];
+      $random_name .= $characters[rand(0, $characters_length - 1)];
     }
+
+    $random_name = strtotime('now').'.'.$random_name;
 
     if (file_exists($this->uploaded_dir.$random_name.'.'.$this->image_extension)) {
       return $this->generate_random_name();
@@ -164,6 +167,7 @@ class Upload_Image
    */
   public function upload()
   {
+    dump($this);
     if (empty($this->get_image_errors())) {
       return move_uploaded_file($this->image['tmp_name'], "{$this->uploaded_dir}/{$this->image_name}.{$this->image_extension}");
     } else {
