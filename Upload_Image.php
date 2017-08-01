@@ -24,17 +24,18 @@ class Upload_Image
    * Do first process to do before class can be used.
    *
    */
-  public function __construct($image, $uploaded_dir = null)
+  public function __construct($image = null, $uploaded_dir = null)
   {
-    if ($image['error'] == 0) {
-      if (empty($uploaded_dir)) {
-        $this->set_uploaded_dir('upload');
-      } else {
+    $this->set_uploaded_dir('upload');
+
+    if (empty($image)) {
+      $this->set_image_errors('No image file.');
+    } elseif ($image['error'] == 0) {
+      if (!empty($uploaded_dir)) {
         $this->set_uploaded_dir($uploaded_dir);
       }
 
       $this->image = $image;
-      $this->set_image_name($this->generate_random_name());
 
       if ($image_extension = $this->generate_image_extension()) {
         if (!in_array($image_extension, $this->allowed_extension)) {
@@ -45,6 +46,8 @@ class Upload_Image
       } else {
         $this->set_image_errors('The uploaded file image extension not found.');
       }
+
+      $this->set_image_name($this->generate_random_name());
     } else {
       $this->set_image_errors($this->validate_errors($image['error']));
     }
@@ -76,9 +79,27 @@ class Upload_Image
     $this->image_errors = $image_errors;
   }
 
+  public function get_image_name()
+  {
+    return $this->image_name.'.'.$this->image_extension;
+  }
+
   public function get_image_errors()
   {
     return $this->image_errors;
+  }
+
+  public function unset_image($image_name = null, $image_location = null)
+  {
+    if (!empty($image_location)) {
+      $this->set_uploaded_dir($image_location);
+    }
+
+    if (!empty($image_name)) {
+      $this->set_image_name($image_name);
+    }
+
+    return unset($this->uploaded_dir.'/'.$this->image_name);
   }
 
   /**
@@ -155,7 +176,7 @@ class Upload_Image
       return $this->generate_random_name();
     }
 
-    return $random_name;
+    return $random_name.'.'.$this->image_extension;
   }
 
   /**
@@ -167,7 +188,6 @@ class Upload_Image
    */
   public function upload()
   {
-    dump($this);
     if (empty($this->get_image_errors())) {
       return move_uploaded_file($this->image['tmp_name'], "{$this->uploaded_dir}/{$this->image_name}.{$this->image_extension}");
     } else {
